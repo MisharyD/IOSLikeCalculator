@@ -1,5 +1,32 @@
+let nb1 = null;
+let nb2 = null;
+let operator = null;
+let resultDiv;
+document.addEventListener("DOMContentLoaded",init);
 
-function operator(nb1, nb2, operator)
+//add event listeners to buttons and disable operators
+function init()
+{
+    document.querySelectorAll(".nb").forEach(function(button)
+    {
+        button.addEventListener("click",changeNb);
+    })
+    resultDiv = document.querySelector(".result-display");
+
+    operators = document.querySelectorAll("")
+}
+
+function changeNb(e)
+{
+    
+}
+
+function display()
+{
+
+}
+
+function calc(nb1, nb2, operator)
 {
     switch(operator)
     {
