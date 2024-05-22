@@ -22,11 +22,13 @@ function init()
     operators.forEach(function(button)
     {
         button.addEventListener("click",changeOp);
-        button.disabled = true;
     })
 
     document.querySelector(".equal").addEventListener("click",equal);
-    
+
+    document.querySelector(".negative").addEventListener("click",negative);
+    document.querySelector(".negative").disabled = true;
+
     document.querySelector(".reset").addEventListener("click",reset);
 
     document.querySelector(".undo").addEventListener("click",undo);
@@ -50,6 +52,7 @@ function changeNb(e)
         })
 
         document.querySelector(".undo").disabled = false;
+        document.querySelector(".negative").disabled = false;
     }
 
     //if an an operator was already chosen and it is the 
@@ -59,6 +62,8 @@ function changeNb(e)
         displayedResult = number;
         nb2 = number
 
+        document.querySelector(".undo").disabled = false;
+        document.querySelector(".negative").disabled = false;
         operators.forEach(function(button)
         {
             button.addEventListener("click",changeOp);
@@ -74,12 +79,9 @@ function changeNb(e)
 
         nb1 = null;
         displayedResult = number;
-        operators.forEach(function(button)
-        {
-            button.disabled = false;
-        })
 
-        displayResults(displayedResult);
+        document.querySelector(".undo").disabled = false;
+        document.querySelector(".negative").disabled = false;
     }
 
     //if an operator was already choosen and and it is not
@@ -92,7 +94,7 @@ function changeNb(e)
     
     //if an operator was not choosen and it is not the 
     //first input
-    else
+    else if (nb1 == null && currOperator == null)
         displayedResult += "" + number;
 
     displayResults(displayedResult);
@@ -101,11 +103,13 @@ function changeNb(e)
 function changeOp(e)
 {
     //if an operator was not choosen before
-    if(nb1 == null)
+    if(nb1 == null && displayedResult != null)
     {
         nb1 = displayedResult;
         currOperator = e.target.innerText
 
+        document.querySelector(".undo").disabled = true;
+        document.querySelector(".negative").disabled = true;
         operators.forEach(function(button)
         {
             button.addEventListener("click",changeOp);
@@ -120,13 +124,7 @@ function changeOp(e)
         equalPressed = false
 
         currOperator = e.target.value;
-
         //new operator.glow
-        operators.forEach(function(button)
-        {
-            button.addEventListener("click",changeOp);
-            button.disabled = true;
-        })
     }
 
     // if an operator was choosen before, calculate the previuos number
@@ -137,23 +135,40 @@ function changeOp(e)
         nb2 = null;
         currOperator = e.target.value;
 
+        document.querySelector(".undo").disabled = true;
+        document.querySelector(".negative").disabled = true;
         //new operator.glow
-        operators.forEach(function(button)
-        {
-            button.addEventListener("click",changeOp);
-            button.disabled = true;
-        })
         //oldoperator.unglow
         displayedResult = nb1;
     }
 
-    displayResults(displayedResult);
+    if(displayedResult != null)
+        displayResults(displayedResult);
+}
+
+function negative()
+{
+    resultArray = Array.from(displayedResult);
+    console.log(resultArray)
+    if(resultArray[0] != ("-"))
+    {
+        resultArray.unshift("-")
+        displayedResult = resultArray.join("");
+
+        if(nb2 != null)
+            nb2 = displayedResult;
+        else if(nb1 != null)
+            nb1 = displayedResult;
+        displayResults(displayedResult);
+    }
+        
+
 }
 
 function undo()
 {
     displayedResult = displayedResult.toString().slice(0, -1);
-    if(displayedResult == "")
+    if(displayedResult == "" || isNaN(displayedResult) )
         displayedResult = 0;
 
     if(nb2 != null)
@@ -165,13 +180,16 @@ function undo()
 
 function equal()
 {
-    if(nb1 != null && nb2 !=null)
+    if((nb1 != null && nb2 !=null))
     {
         nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
         nb2 = null;
         displayedResult = nb1;
         currOperator = null;
         equalPressed = true;
+
+        document.querySelector(".undo").disabled = true;
+        document.querySelector(".negative").disabled = true;
 
         displayResults(displayedResult);
     }
