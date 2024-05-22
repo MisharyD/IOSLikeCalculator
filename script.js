@@ -26,6 +26,9 @@ function init()
 
     document.querySelector(".equal").addEventListener("click",equal);
 
+    document.querySelector(".point").addEventListener("click",addPoint)
+    document.querySelector(".point").disabled = true;
+
     document.querySelector(".negative").addEventListener("click",negative);
     document.querySelector(".negative").disabled = true;
 
@@ -47,7 +50,7 @@ function changeNb(e)
     {
         displayedResult = number;
 
-        toggleUndoNegativeButtons(false);
+        toggleUndoNegativePointButtons(false);
     }
 
     //if an an operator was already chosen and it is the 
@@ -57,7 +60,7 @@ function changeNb(e)
         displayedResult = number;
         nb2 = number
 
-        toggleUndoNegativeButtons(false);;
+        toggleUndoNegativePointButtons(false);;
         //operator.unglow
     }
 
@@ -69,7 +72,7 @@ function changeNb(e)
         nb1 = null;
         displayedResult = number;
 
-        toggleUndoNegativeButtons(true);
+        toggleUndoNegativePointButtons(true);
     }
 
     //if an operator was already choosen and and it is not
@@ -109,7 +112,7 @@ function changeOp(e)
         nb1 = displayedResult;
         currOperator = e.target.innerText
 
-        toggleUndoNegativeButtons(true);
+        toggleUndoNegativePointButtons(true);
         //operator.glow
     }
 
@@ -126,11 +129,11 @@ function changeOp(e)
     // using the choosen operator from before then change the operator
     else if(nb1 != null && nb2 != null)
     {
-        nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
+        nb1 = calc(parseFloat(nb1), parseFloat(nb2), currOperator);
         nb2 = null;
         currOperator = e.target.value;
 
-        toggleUndoNegativeButtons(true);
+        toggleUndoNegativePointButtons(true);
         //new operator.glow
         //oldoperator.unglow
         displayedResult = nb1;
@@ -160,13 +163,28 @@ function negative()
 
 }
 
+function addPoint()
+{
+    //check if there is already a point
+    if(!displayedResult.includes("."))
+    {
+        displayedResult += ".";
+
+        if(nb2 != null)
+            nb2 = displayedResult;
+        else if(nb1 != null)
+            nb1 = displayedResult;
+        displayResults(displayedResult);
+    }
+}
+
 function undo()
 {
     displayedResult = displayedResult.toString().slice(0, -1);
     if(displayedResult == "" || isNaN(displayedResult) )
     {
         displayedResult = null;
-        toggleUndoNegativeButtons(true);
+        toggleUndoNegativePointButtons(true);
     }
 
     result = displayedResult == null? 0: displayedResult
@@ -182,14 +200,13 @@ function equal()
 {
     if((nb1 != null && nb2 !=null))
     {
-        nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
+        nb1 = calc(parseFloat(nb1), parseFloat(nb2), currOperator);
         nb2 = null;
         displayedResult = nb1;
         currOperator = null;
         equalPressed = true;
 
-        document.querySelector(".undo").disabled = true;
-        document.querySelector(".negative").disabled = true;
+        toggleUndoNegativePointButtons(true);
 
         displayResults(displayedResult);
     }
@@ -210,17 +227,20 @@ function reset()
 
 }
 
-function toggleUndoNegativeButtons(toggleValue)
+
+function toggleUndoNegativePointButtons(toggleValue)
 {
     if(toggleValue == true)
     {
         document.querySelector(".undo").disabled = true;
         document.querySelector(".negative").disabled = true;
+        document.querySelector(".point").disabled = true;
     }
     else if(toggleValue == false)
     {
         document.querySelector(".undo").disabled = false;
         document.querySelector(".negative").disabled = false;
+        document.querySelector(".point").disabled = false;
     }
 }
 
