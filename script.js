@@ -46,13 +46,8 @@ function changeNb(e)
     if(displayedResult == null)
     {
         displayedResult = number;
-        operators.forEach(function(button)
-        {
-            button.disabled = false;
-        })
 
-        document.querySelector(".undo").disabled = false;
-        document.querySelector(".negative").disabled = false;
+        toggleUndoNegativeButtons(false);
     }
 
     //if an an operator was already chosen and it is the 
@@ -62,13 +57,7 @@ function changeNb(e)
         displayedResult = number;
         nb2 = number
 
-        document.querySelector(".undo").disabled = false;
-        document.querySelector(".negative").disabled = false;
-        operators.forEach(function(button)
-        {
-            button.addEventListener("click",changeOp);
-            button.disabled = false;
-        })
+        toggleUndoNegativeButtons(false);;
         //operator.unglow
     }
 
@@ -80,22 +69,34 @@ function changeNb(e)
         nb1 = null;
         displayedResult = number;
 
-        document.querySelector(".undo").disabled = false;
-        document.querySelector(".negative").disabled = false;
+        toggleUndoNegativeButtons(true);
     }
 
     //if an operator was already choosen and and it is not
     //the first input after it was choosen
     else if(currOperator != null)
     {
-        displayedResult += "" + number;
-        nb2 += "" + number;
+        result = displayedResult + "" + number
+
+        //this is needed when an undo happens and the only character remaining is a '0' 
+        //therefore after adding another number it result a leading 0
+        result = result.replace(/^0+/, '');
+
+        displayedResult = result;
+        nb2 = result;
     }
     
-    //if an operator was not choosen and it is not the 
-    //first input
+    //if an operator was not choosen and it is not the first input
     else if (nb1 == null && currOperator == null)
-        displayedResult += "" + number;
+    {
+        result = displayedResult + "" + number
+
+        //this is needed when an undo happens and the only character remaining is a '0' 
+        //therefore after adding another number it result a leading 0
+        result = result.replace(/^0+/, '');
+        
+        displayedResult = result;
+    }
 
     displayResults(displayedResult);
 }
@@ -108,13 +109,7 @@ function changeOp(e)
         nb1 = displayedResult;
         currOperator = e.target.innerText
 
-        document.querySelector(".undo").disabled = true;
-        document.querySelector(".negative").disabled = true;
-        operators.forEach(function(button)
-        {
-            button.addEventListener("click",changeOp);
-            button.disabled = true;
-        })
+        toggleUndoNegativeButtons(true);
         //operator.glow
     }
 
@@ -135,8 +130,7 @@ function changeOp(e)
         nb2 = null;
         currOperator = e.target.value;
 
-        document.querySelector(".undo").disabled = true;
-        document.querySelector(".negative").disabled = true;
+        toggleUndoNegativeButtons(true);
         //new operator.glow
         //oldoperator.unglow
         displayedResult = nb1;
@@ -149,7 +143,8 @@ function changeOp(e)
 function negative()
 {
     resultArray = Array.from(displayedResult);
-    console.log(resultArray)
+
+    //check if there is already a negative sign
     if(resultArray[0] != ("-"))
     {
         resultArray.unshift("-")
@@ -169,13 +164,18 @@ function undo()
 {
     displayedResult = displayedResult.toString().slice(0, -1);
     if(displayedResult == "" || isNaN(displayedResult) )
-        displayedResult = 0;
+    {
+        displayedResult = null;
+        toggleUndoNegativeButtons(true);
+    }
+
+    result = displayedResult == null? 0: displayedResult
 
     if(nb2 != null)
-        nb2 = displayedResult;
+        nb2 = result;
     else if(nb1 != null)
-        nb1 = displayedResult;
-    displayResults(displayedResult);
+        nb1 = result;
+    displayResults(result);
 }
 
 function equal()
@@ -197,11 +197,31 @@ function equal()
 
 function reset()
 {
+    document.querySelector(".negative").disabled = true;
+    document.querySelector(".undo").disabled = true;
+
     nb1 = null;
     nb2 = null;
     currOperator = null;
     displayedResult = null;
+    equalPressed = false;
+    
     displayResults(0);
+
+}
+
+function toggleUndoNegativeButtons(toggleValue)
+{
+    if(toggleValue == true)
+    {
+        document.querySelector(".undo").disabled = true;
+        document.querySelector(".negative").disabled = true;
+    }
+    else if(toggleValue == false)
+    {
+        document.querySelector(".undo").disabled = false;
+        document.querySelector(".negative").disabled = false;
+    }
 }
 
 function displayResults(result)
