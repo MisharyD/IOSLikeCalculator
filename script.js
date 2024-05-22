@@ -25,7 +25,6 @@ function init()
         button.disabled = true;
     })
 
-    document.querySelector(".equal").disabled = true;
     document.querySelector(".equal").addEventListener("click",equal);
     
     document.querySelector(".reset").addEventListener("click",reset);
@@ -66,7 +65,21 @@ function changeNb(e)
             button.disabled = false;
         })
         //operator.unglow
-        document.querySelector(".equal").disabled = false;
+    }
+
+    //equal button was pressed
+    else if(equalPressed)
+    {
+        equalPressed = false;
+
+        nb1 = null;
+        displayedResult = number;
+        operators.forEach(function(button)
+        {
+            button.disabled = false;
+        })
+
+        displayResults(displayedResult);
     }
 
     //if an operator was already choosen and and it is not
@@ -76,6 +89,7 @@ function changeNb(e)
         displayedResult += "" + number;
         nb2 += "" + number;
     }
+    
     //if an operator was not choosen and it is not the 
     //first input
     else
@@ -100,8 +114,23 @@ function changeOp(e)
         //operator.glow
     }
 
-    // if an operator was choosen before calculate the previuos number
-    // using the choosen calculator from before then change the operator
+    //if equal was just pressed
+    else if(nb1 != null && equalPressed)
+    {
+        equalPressed = false
+
+        currOperator = e.target.value;
+
+        //new operator.glow
+        operators.forEach(function(button)
+        {
+            button.addEventListener("click",changeOp);
+            button.disabled = true;
+        })
+    }
+
+    // if an operator was choosen before, calculate the previuos number
+    // using the choosen operator from before then change the operator
     else if(nb1 != null && nb2 != null)
     {
         nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
@@ -116,9 +145,6 @@ function changeOp(e)
         })
         //oldoperator.unglow
         displayedResult = nb1;
-
-        
-        document.querySelector(".equal").disabled = true;
     }
 
     displayResults(displayedResult);
@@ -129,19 +155,26 @@ function undo()
     displayedResult = displayedResult.toString().slice(0, -1);
     if(displayedResult == "")
         displayedResult = 0;
+
+    if(nb2 != null)
+        nb2 = displayedResult;
+    else if(nb1 != null)
+        nb1 = displayedResult;
     displayResults(displayedResult);
 }
 
 function equal()
 {
-    nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
-    nb2 = null;
-    displayedResult = nb1;
-    currOperator = null;
-    equalPressed = true;
+    if(nb1 != null && nb2 !=null)
+    {
+        nb1 = calc(parseInt(nb1), parseInt(nb2), currOperator);
+        nb2 = null;
+        displayedResult = nb1;
+        currOperator = null;
+        equalPressed = true;
 
-    document.querySelector(".equal").disabled = true;
-    displayResults(displayedResult);
+        displayResults(displayedResult);
+    }
 }
 
 function reset()

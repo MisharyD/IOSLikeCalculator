@@ -10,3 +10,13 @@ body
 {
     width:600px;
 }
+
+.oper-container
+{
+    width: fit-content;
+}
+
+button
+{
+    width: 100%;
+}
