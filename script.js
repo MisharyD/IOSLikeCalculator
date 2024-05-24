@@ -139,6 +139,15 @@ function changeOp(e)
         displayedResult = nb1;
     }
 
+    //if second number was not yet choosen (wants to change the previously selected operator)
+    else if(nb1 != null && currOperator != null)
+    {
+        currOperator = e.target.innerText;
+        //oldoperator.unglow
+        //newoperator.glow
+    }
+
+
     if(displayedResult != null)
         displayResults(displayedResult);
 }
