@@ -30,7 +30,7 @@ body
     margin:0px;
     display:flex;
     flex-direction: column;
-    gap:0.5em
+    gap:0.5em;
 }
 
 .row
@@ -42,18 +42,13 @@ body
     justify-content: space-evenly;
 }
 
-.op:disabled
-{
-    background-color: #fe9505;
-    border:0px;
-    color:black;
-}
 
 .nb, .point
 {
     background-color: #333333;
     border: 0px;
     color:white;
+    font-size: 28px;
 }
 
 .op, .equal
@@ -61,6 +56,32 @@ body
     background-color: #fe9505;
     color:white;
     border: 0px;
+    font-size: 28px;
+}  
+
+.op:disabled
+{
+    background-color: #fe9505;
+    border:0px;
+    color:black;
+}
+.selected-operator
+{
+    background-color: white;
+    color:#fe9505;
+    transition: background 0.15s;
+}
+
+.temp-nb-background
+{
+    background-color: rgba(250, 243, 243, 0.556);
+    transition: background 0.2s;
+}
+
+.original-nb-background
+{
+    background-color: #333333;
+    transition: background 0.5s;
 }
 
 .reset, .negative, .undo
@@ -69,8 +90,32 @@ body
     color:black;
     opacity: 1;
     border:0px;
+    font-size: 28px;
 }
 
+.temp-ResetNegativeUndo-background
+{
+    background-color: rgb(255, 252, 252);
+    transition: background 0.2s;
+}
+
+.original-ResetNegativeUndo-background
+{
+    background-color: #a5a5a5;
+    transition: background 0.5s;
+}
+
+.temp-equal-background
+{
+    background-color: rgb(214, 206, 206);
+    transition: background 0.2s;
+}
+
+.original-equal-background
+{
+    background-color: #fe9505;
+    transition: background 0.5s;
+}
 
 button
 {

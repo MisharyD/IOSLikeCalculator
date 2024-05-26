@@ -16,6 +16,7 @@ function init()
     nbs.forEach(function(button)
     {
         button.addEventListener("click",changeNb);
+        button.addEventListener("click",changeNbPointBackground);
     })
 
     operators = document.querySelectorAll(".op");
@@ -25,16 +26,21 @@ function init()
     })
 
     document.querySelector(".equal").addEventListener("click",equal);
+    document.querySelector(".equal").addEventListener("click",changeEqualBackground);
 
     document.querySelector(".point").addEventListener("click",addPoint)
+    document.querySelector(".point").addEventListener("click",changeNbPointBackground);
     document.querySelector(".point").disabled = true;
 
     document.querySelector(".negative").addEventListener("click",negative);
     document.querySelector(".negative").disabled = true;
+    document.querySelector(".negative").addEventListener("click",changeResetNegativeUndoBackground);
 
     document.querySelector(".reset").addEventListener("click",reset);
+    document.querySelector(".reset").addEventListener("click",changeResetNegativeUndoBackground);
 
     document.querySelector(".undo").addEventListener("click",undo);
+    document.querySelector(".undo").addEventListener("click",changeResetNegativeUndoBackground);
     document.querySelector(".undo").disabled = true;
 
     resultDiv = document.querySelector(".result-display");
@@ -59,7 +65,7 @@ function changeNb(e)
     {
         displayedResult = number;
         nb2 = number
-
+        removeOpGlow(false);
         toggleUndoNegativePointButtons(false);;
         //operator.unglow
     }
@@ -71,7 +77,7 @@ function changeNb(e)
 
         nb1 = null;
         displayedResult = number;
-
+        
         toggleUndoNegativePointButtons(true);
     }
 
@@ -113,7 +119,7 @@ function changeOp(e)
         currOperator = e.target.innerText
 
         toggleUndoNegativePointButtons(true);
-        //operator.glow
+        e.target.classList.add("selected-operator");
     }
 
     //if equal was just pressed
@@ -122,7 +128,7 @@ function changeOp(e)
         equalPressed = false
 
         currOperator = e.target.value;
-        //new operator.glow
+        e.target.classList.add("selected-operator");
     }
 
     // if an operator was choosen before, calculate the previuos number
@@ -134,8 +140,8 @@ function changeOp(e)
         currOperator = e.target.value;
 
         toggleUndoNegativePointButtons(true);
-        //new operator.glow
-        //oldoperator.unglow
+        e.target.classList.add("selected-operator");
+        removeOpGlow(true);
         displayedResult = nb1;
     }
 
@@ -143,13 +149,74 @@ function changeOp(e)
     else if(nb1 != null && currOperator != null)
     {
         currOperator = e.target.innerText;
-        //oldoperator.unglow
-        //newoperator.glow
+        e.target.classList.add("selected-operator");
+        
+        removeOpGlow(true);
     }
 
 
     if(displayedResult != null)
         displayResults(displayedResult);
+}
+
+function removeOpGlow(keepNew) {
+    let allOps = document.querySelectorAll(".op");
+
+    if(keepNew)
+    {
+        allOps.forEach(op => {
+            let opClassList = op.classList;
+            if (opClassList.contains("selected-operator") && op.innerText != currOperator)
+                op.classList.remove("selected-operator");
+        });
+    }
+    else
+    {
+        allOps.forEach(op => {
+            let opClassList = op.classList;
+            if (opClassList.contains("selected-operator"))
+                op.classList.remove("selected-operator");
+        });
+    }
+}
+
+function changeNbPointBackground(e) 
+{
+    var button = e.target
+    button.classList.add('temp-nb-background');
+
+    setTimeout(function() 
+    {
+        button.classList.add('original-nb-background');  
+        button.classList.remove('temp-nb-background');
+    }, 200);
+    button.classList.remove('original-nb-background');
+}
+
+function changeResetNegativeUndoBackground(e)
+{
+    var button = e.target
+    button.classList.add('temp-ResetNegativeUndo-background');
+
+    setTimeout(function() 
+    {
+        button.classList.add('original-ResetNegativeUndo-background');  
+        button.classList.remove('temp-ResetNegativeUndo-background');
+    }, 200);
+    button.classList.remove('original-ResetNegativeUndo-background');
+}
+
+function changeEqualBackground(e)
+{
+    var button = e.target
+    button.classList.add('temp-equal-background');
+
+    setTimeout(function() 
+    {
+        button.classList.add('original-equal-background');  
+        button.classList.remove('temp-equal-background');
+    }, 200);
+    button.classList.remove('original-equal-background');
 }
 
 function negative()
@@ -216,7 +283,7 @@ function equal()
         equalPressed = true;
 
         toggleUndoNegativePointButtons(true);
-
+        removeOpGlow(false);
         displayResults(displayedResult);
     }
 }
@@ -231,7 +298,8 @@ function reset()
     currOperator = null;
     displayedResult = null;
     equalPressed = false;
-    
+    removeOpGlow();
+
     displayResults(0);
 
 }
