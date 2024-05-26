@@ -162,6 +162,7 @@ function changeOp(e)
 function removeOpGlow(keepNew) {
     let allOps = document.querySelectorAll(".op");
 
+    //keep the glow of currently selected operator
     if(keepNew)
     {
         allOps.forEach(op => {
@@ -170,6 +171,7 @@ function removeOpGlow(keepNew) {
                 op.classList.remove("selected-operator");
         });
     }
+    //remove any operator glow
     else
     {
         allOps.forEach(op => {
