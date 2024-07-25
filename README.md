@@ -1,1 +1,2 @@
-# This Calculator behaves almost the same as an IOS(iphone) calculator.
+#Calculator
+This calculator bahaves the same as an IOS(iphone) calculator.
